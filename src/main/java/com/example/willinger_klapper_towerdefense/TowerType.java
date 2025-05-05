@@ -4,10 +4,10 @@ package com.example.willinger_klapper_towerdefense;
 import javafx.scene.paint.Color;
 
 public enum TowerType {
-    RED   ("Bogenschützenturm", Color.RED,    100, 200, 1,   60),
-    BLUE  ("Kanonenturm",      Color.BLUE,   150, 180, 2,  180),
-    GREEN ("Eisturm",          Color.CYAN,   200,  80, 1,  180),
-    YELLOW("Magischer Turm",   Color.GOLD,   300, 190, 4,  180);
+    RED   ("Bogenschützenturm", Color.RED,    100, 200, 2,   60),
+    BLUE  ("Kanonenturm",      Color.BLUE,   150, 180, 3,  180),
+    GREEN ("Eisturm",          Color.CYAN,   200,  80, 2,  180),
+    YELLOW("Magischer Turm",   Color.GOLD,   300, 190, 5,  180);
 
     private final String displayName;
     private final Color  color;

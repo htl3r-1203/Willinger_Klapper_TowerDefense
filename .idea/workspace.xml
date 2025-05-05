@@ -4,30 +4,10 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="41bb3608-9294-4264-a846-61cd0560210d" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/encodings.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.mvn/wrapper/maven-wrapper.jar" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.mvn/wrapper/maven-wrapper.properties" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/mvnw" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/mvnw.cmd" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/example/willinger_klapper_towerdefense/CannonProjectile.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/example/willinger_klapper_towerdefense/Enemy.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/example/willinger_klapper_towerdefense/Explosion.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/example/willinger_klapper_towerdefense/FastEnemy.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/example/willinger_klapper_towerdefense/IceBlast.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/example/willinger_klapper_towerdefense/MagicProjectile.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/example/willinger_klapper_towerdefense/Main.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/example/willinger_klapper_towerdefense/Projectile.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/example/willinger_klapper_towerdefense/Spark.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/example/willinger_klapper_towerdefense/TankEnemy.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/example/willinger_klapper_towerdefense/Tower.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/example/willinger_klapper_towerdefense/TowerType.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/com/example/willinger_klapper_towerdefense/hello-view.fxml" afterDir="false" />
+    <list default="true" id="41bb3608-9294-4264-a846-61cd0560210d" name="Changes" comment="copy">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/willinger_klapper_towerdefense/FastEnemy.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/willinger_klapper_towerdefense/FastEnemy.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/willinger_klapper_towerdefense/TowerType.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/willinger_klapper_towerdefense/TowerType.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -44,6 +24,18 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
+  <component name="GitHubPullRequestSearchHistory"><![CDATA[{
+  "lastFilter": {
+    "state": "OPEN",
+    "assignee": "htl3r-1203"
+  }
+}]]></component>
+  <component name="GithubPullRequestsUISettings"><![CDATA[{
+  "selectedUrlAndAccountId": {
+    "url": "https://github.com/htl3r-1203/Willinger_Klapper_TowerDefense.git",
+    "accountId": "f4561bbc-c089-437d-9c7f-953c086a2001"
+  }
+}]]></component>
   <component name="MavenImportPreferences">
     <option name="generalSettings">
       <MavenGeneralSettings>
@@ -60,26 +52,33 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;Application.Main.executor&quot;: &quot;Run&quot;,
-    &quot;Application.Unnamed.executor&quot;: &quot;Run&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;master&quot;,
-    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "Application.Main.executor": "Run",
+    "Application.Unnamed.executor": "Run",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "git-widget-placeholder": "master",
+    "ignore.virus.scanning.warn.message": "true",
+    "kotlin-language-version-configured": "true",
+    "last_opened_file_path": "D:/Documents/Schule/3. Klasse/SEW/Abschlussprojekt/javafx-sdk-21.0.7/lib",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "project.structure.last.edited": "Project",
+    "project.structure.proportion": "0.15",
+    "project.structure.side.proportion": "0.2",
+    "settings.editor.selected.configurable": "reference.settingsdialog.IDE.editor.colors.JVM Logging",
+    "vue.rearranger.settings.migration": "true"
   }
-}</component>
+}]]></component>
   <component name="RunManager">
     <configuration name="Main" type="Application" factoryName="Application" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="com.example.willinger_klapper_towerdefense.Main" />
       <module name="Willinger_Klapper_TowerDefense" />
-      <option name="VM_PARAMETERS" value="--module-path &quot;C:\Users\Manuel\javafx-sdk-23.0.1\lib&quot; --add-modules javafx.controls,javafx.fxml " />
+      <option name="VM_PARAMETERS" value="--module-path &quot;D:\Documents\Schule\3. Klasse\SEW\Abschlussprojekt\javafx-sdk-21.0.7\lib&quot; --add-modules javafx.controls,javafx.fxml" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
@@ -88,8 +87,8 @@
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
-        <option value="bundled-jdk-9f38398b9061-18abd8497189-intellij.indexing.shared.core-IU-241.14494.240" />
-        <option value="bundled-js-predefined-1d06a55b98c1-74d2a5396914-JavaScript-IU-241.14494.240" />
+        <option value="bundled-jdk-9823dce3aa75-a94e463ab2e7-intellij.indexing.shared.core-IU-243.26053.27" />
+        <option value="bundled-js-predefined-d6986cc7102b-1632447f56bf-JavaScript-IU-243.26053.27" />
       </set>
     </attachedChunks>
   </component>
@@ -103,10 +102,35 @@
       <updated>1745833692575</updated>
       <workItem from="1745833693666" duration="10089000" />
       <workItem from="1745848559955" duration="3280000" />
+      <workItem from="1746438479793" duration="3833000" />
     </task>
+    <task id="LOCAL-00001" summary="copy">
+      <option name="closed" value="true" />
+      <created>1746439809163</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1746439809163</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="copy" />
+    <option name="LAST_COMMIT_MESSAGE" value="copy" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/com/example/willinger_klapper_towerdefense/Main.java</url>
+          <line>22</line>
+          <option name="timeStamp" value="1" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
   </component>
 </project>
