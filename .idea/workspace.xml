@@ -4,11 +4,45 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="41bb3608-9294-4264-a846-61cd0560210d" name="Changes" comment="" />
+    <list default="true" id="41bb3608-9294-4264-a846-61cd0560210d" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/encodings.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.mvn/wrapper/maven-wrapper.jar" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.mvn/wrapper/maven-wrapper.properties" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/mvnw" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/mvnw.cmd" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/example/willinger_klapper_towerdefense/CannonProjectile.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/example/willinger_klapper_towerdefense/Enemy.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/example/willinger_klapper_towerdefense/Explosion.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/example/willinger_klapper_towerdefense/FastEnemy.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/example/willinger_klapper_towerdefense/IceBlast.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/example/willinger_klapper_towerdefense/MagicProjectile.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/example/willinger_klapper_towerdefense/Main.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/example/willinger_klapper_towerdefense/Projectile.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/example/willinger_klapper_towerdefense/Spark.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/example/willinger_klapper_towerdefense/TankEnemy.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/example/willinger_klapper_towerdefense/Tower.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/example/willinger_klapper_towerdefense/TowerType.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/resources/com/example/willinger_klapper_towerdefense/hello-view.fxml" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Class" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
   <component name="MavenImportPreferences">
     <option name="generalSettings">
@@ -17,23 +51,40 @@
       </MavenGeneralSettings>
     </option>
   </component>
-  <component name="ProjectColorInfo"><![CDATA[{
-  "associatedIndex": 3
-}]]></component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 3
+}</component>
   <component name="ProjectId" id="2wLvVHLHNGKLvIcVw7IBX27VEE4" />
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "kotlin-language-version-configured": "true",
-    "nodejs_package_manager_path": "npm",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;Application.Main.executor&quot;: &quot;Run&quot;,
+    &quot;Application.Unnamed.executor&quot;: &quot;Run&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;master&quot;,
+    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
-}]]></component>
+}</component>
+  <component name="RunManager">
+    <configuration name="Main" type="Application" factoryName="Application" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="com.example.willinger_klapper_towerdefense.Main" />
+      <module name="Willinger_Klapper_TowerDefense" />
+      <option name="VM_PARAMETERS" value="--module-path &quot;C:\Users\Manuel\javafx-sdk-23.0.1\lib&quot; --add-modules javafx.controls,javafx.fxml " />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+  </component>
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
@@ -50,7 +101,8 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1745833692575</updated>
-      <workItem from="1745833693666" duration="6000" />
+      <workItem from="1745833693666" duration="10089000" />
+      <workItem from="1745848559955" duration="3280000" />
     </task>
     <servers />
   </component>
