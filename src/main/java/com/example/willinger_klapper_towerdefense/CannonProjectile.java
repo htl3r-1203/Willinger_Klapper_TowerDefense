@@ -4,6 +4,7 @@ import javafx.geometry.Point2D;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 
+
 public class CannonProjectile extends Projectile {
     public CannonProjectile(Point2D start, Point2D aim, double speed, int damage, Color color) {
         super(start, aim, speed, damage, color);

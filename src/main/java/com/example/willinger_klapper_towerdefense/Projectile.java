@@ -11,6 +11,7 @@ public class Projectile {
     private final int    damage;
     private final Color  color;
 
+
     /**
      * @param start   Ausgangspunkt des Projektils
      * @param target  Zielpunkt (wird zur Berechnung der Richtung genutzt)
@@ -72,4 +73,8 @@ public class Projectile {
     public int getDamage() {
         return damage;
     }
+    public Color getColor() {
+        return color;
+    }
 }
+

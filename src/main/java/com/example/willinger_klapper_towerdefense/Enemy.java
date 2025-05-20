@@ -1,4 +1,3 @@
-// Enemy.java
 package com.example.willinger_klapper_towerdefense;
 
 import javafx.geometry.Point2D;
@@ -17,6 +16,10 @@ public class Enemy {
     private int slowFrames = 0;
     protected Color color = Color.RED;
 
+    private int burnTicks = 0;
+    private int burnCooldown = 0;
+    private int burnDamage = 0;
+
     public Enemy(List<Point2D> path, int maxHealth, double baseSpeed) {
         this.path = path;
         Point2D start = path.get(0);
@@ -28,7 +31,7 @@ public class Enemy {
     }
 
     public Enemy(List<Point2D> path) {
-        this(path, 5, 0.5);
+        this(path, 5, 1);
     }
 
     public static Enemy spawn(List<Point2D> path) {
@@ -47,18 +50,28 @@ public class Enemy {
             slowFrames--;
             if (slowFrames == 0) speedMultiplier = 1.0;
         }
-        if (currentSegment >= path.size() - 1) return;
-        Point2D next = path.get(currentSegment + 1);
-        double dx = next.getX() - x, dy = next.getY() - y;
-        double dist = Math.hypot(dx, dy);
-        double v = baseSpeed * speedMultiplier;
-        if (dist < v) {
-            x = next.getX();
-            y = next.getY();
-            currentSegment++;
-        } else {
-            x += dx / dist * v;
-            y += dy / dist * v;
+        if (currentSegment < path.size() - 1) {
+            Point2D next = path.get(currentSegment + 1);
+            double dx = next.getX() - x, dy = next.getY() - y;
+            double dist = Math.hypot(dx, dy);
+            double v = baseSpeed * speedMultiplier;
+            if (dist < v) {
+                x = next.getX();
+                y = next.getY();
+                currentSegment++;
+            } else {
+                x += dx / dist * v;
+                y += dy / dist * v;
+            }
+        }
+        if (burnTicks > 0) {
+            if (burnCooldown <= 0) {
+                takeDamage(burnDamage);
+                burnCooldown = 30;
+            } else {
+                burnCooldown--;
+            }
+            burnTicks--;
         }
     }
 
@@ -68,9 +81,14 @@ public class Enemy {
         double barW = 20, barH = 4;
         double ratio = (double) health / maxHealth;
         gc.setFill(Color.LIMEGREEN);
-        gc.fillRect(x - barW/2, y - 16, barW * ratio, barH);
+        gc.fillRect(x - barW / 2, y - 16, barW * ratio, barH);
         if (slowFrames > 0) {
             gc.setStroke(Color.CYAN);
+            gc.setLineWidth(2);
+            gc.strokeOval(x - 12, y - 12, 24, 24);
+        }
+        if (burnTicks > 0) {
+            gc.setStroke(Color.ORANGERED);
             gc.setLineWidth(2);
             gc.strokeOval(x - 12, y - 12, 24, 24);
         }
@@ -103,5 +121,27 @@ public class Enemy {
     public void applySlow(int frames, double multiplier) {
         slowFrames = Math.max(slowFrames, frames);
         speedMultiplier = multiplier;
+    }
+
+    public void applyBurn(int durationFrames, int damagePerSecond) {
+        burnTicks = Math.max(burnTicks, durationFrames);
+        burnDamage = damagePerSecond;
+        burnCooldown = 0;
+    }
+
+    public Color getColor() {
+        return color;
+    }
+
+    public List<Point2D> getPath() {
+        return path;
+    }
+
+    public double getBaseSpeed() {
+        return baseSpeed;
+    }
+
+    public double getSpeedMultiplier() {
+        return speedMultiplier;
     }
 }

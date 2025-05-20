@@ -17,8 +17,8 @@ public class MagicProjectile extends Projectile {
                            double speed, int damage,
                            Color color, double range) {
         super(start, aim, speed, damage, color);
-        this.startX   = start.getX();
-        this.startY   = start.getY();
+        this.startX = start.getX();
+        this.startY = start.getY();
         this.maxRange = range;
     }
 

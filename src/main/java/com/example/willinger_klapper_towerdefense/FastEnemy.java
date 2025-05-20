@@ -7,7 +7,7 @@ import java.util.List;
 
 public class FastEnemy extends Enemy {
     public FastEnemy(List<Point2D> path) {
-        super(path, 5, 2);
+        super(path, 2, 1.5);
         this.color = Color.BLUE;
     }
 }
