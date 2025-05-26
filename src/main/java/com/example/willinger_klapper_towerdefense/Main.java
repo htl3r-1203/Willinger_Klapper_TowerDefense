@@ -473,7 +473,6 @@ public class Main extends Application {
 
             // … hier kommt dein bestehender Abschuss-Code …
 
-
             Point2D origin = new Point2D(t.getX(), t.getY());
 
             if (type == TowerType.GREEN) {
