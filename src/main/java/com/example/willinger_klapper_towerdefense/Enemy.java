@@ -144,4 +144,10 @@ public class Enemy {
     public double getSpeedMultiplier() {
         return speedMultiplier;
     }
+    public void heal(int amount) {
+        health = Math.min(maxHealth, health + amount);
+    }
+
+    public int getHealth() { return health; }
+    public int getMaxHealth()  { return maxHealth; }
 }
