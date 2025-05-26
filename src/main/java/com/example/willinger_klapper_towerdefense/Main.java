@@ -21,12 +21,18 @@ import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import javafx.scene.layout.StackPane;
 import javafx.geometry.Insets;
+import javafx.animation.PauseTransition;
+import javafx.util.Duration;
+import java.util.function.Supplier;
+import java.util.Collections;
+import java.nio.file.*;
+import java.util.Optional;
 
 import java.util.*;
 
 public class Main extends Application {
     private boolean gameStarted = false;
-    private int gold = 50000; // Startgeld
+    private int gold = 500; // Startgeld
     private Label goldLabel; // Label für Anzeige
     private Label messageLabel = new Label(); // Für Hinweis-Meldungen
     private boolean paused = false;
@@ -35,12 +41,41 @@ public class Main extends Application {
     private Rectangle damageOverlay = new Rectangle();
     private final List<PoisonCloud> poisonClouds = new ArrayList<>();
     private static final double NO_SHOOT_RADIUS = 30;
+    private int currentWave = 1;
+    private final int maxWaves = 15;
+    private static final int GOLD_REWARD = 5;
+
+    // Basis-Anzahl in Welle 1:
+    // Wellen‐ und Spawn‐Daten
+
+    // Basis‐Größen Welle 1
+    private final int baseNormal  = 20;
+    private final int baseFast    = 5;
+    private final int baseTank    = 2;
+
+    // Dynamische Spawn‐Queue und Intervall
+    private List<Supplier<Enemy>> spawnQueue = new ArrayList<>();
+    private long waveSpawnInterval;      // in Nanosekunden
+
+    // Zähler für die gerade laufende Welle:
+    private int remainingNormal;
+    private int remainingFast;
+    private int remainingTank;
 
     private static final double PATH_WIDTH       = 40;
     private static final double SPOT_MARGIN      = 10;
     private static final double SPOT_SPACING     = 80;
     private static final double PROJECTILE_SPEED = 4;
     private static final long   SPAWN_INTERVAL   = 1_000_000_000L;
+    private Label waveLabel = new Label("Runde: 0");
+    private int score = 0;
+    private int highScore = HighScoreManager.load();
+    private int lives = 20;
+
+    private final Label scoreLabel     = new Label("Score: 0");
+    private final Label highScoreLabel = new Label("Highscore: " + highScore);
+    private final Label livesLabel     = new Label("Lives: 20");
+
 
     private final List<Point2D> pathNorm     = List.of(
             new Point2D(0.00, 0.30), new Point2D(0.35, 0.30),
@@ -49,15 +84,15 @@ public class Main extends Application {
             new Point2D(0.30, 0.80), new Point2D(0.80, 0.80),
             new Point2D(0.80, 0.20), new Point2D(1.02, 0.20)
     );
-    private final List<Point2D> pathPoints   = new ArrayList<>();
-    private final List<Point2D> buildSpots   = new ArrayList<>();
-    private final List<Enemy>    enemies      = new ArrayList<>();
-    private final List<Tower>    towers       = new ArrayList<>();
-    private final List<Projectile> projectiles= new ArrayList<>();
-    private final List<Explosion>  explosions = new ArrayList<>();
-    private final List<IceBlast>   iceBlasts  = new ArrayList<>();
-    private final List<Spark>      sparks     = new ArrayList<>();
-    private final Map<Tower, TowerType> towerTypeMap  = new HashMap<>();
+    private final List<Point2D> pathPoints = new ArrayList<>();
+    private final List<Point2D> buildSpots = new ArrayList<>();
+    private final List<Enemy> enemies = new ArrayList<>();
+    private final List<Tower> towers = new ArrayList<>();
+    private final List<Projectile> projectiles = new ArrayList<>();
+    private final List<Explosion> explosions = new ArrayList<>();
+    private final List<IceBlast> iceBlasts = new ArrayList<>();
+    private final List<Spark> sparks = new ArrayList<>();
+    private final Map<Tower, TowerType> towerTypeMap = new HashMap<>();
     private final Map<TowerType, Button> typeButtonMap = new HashMap<>();
 
     private TowerType currentTowerType = TowerType.RED;
@@ -65,36 +100,29 @@ public class Main extends Application {
 
     @Override
     public void start(Stage stage) {
-        Canvas canvas = new Canvas();
+        // Canvas & GraphicsContext
+        Canvas canvas = new Canvas(900, 650 - 40); // leave room for topBar
+        GraphicsContext gc = canvas.getGraphicsContext2D();
+
+        // Damage-Overlay
+        damageOverlay = new Rectangle();
+        damageOverlay.setFill(Color.rgb(255, 0, 0, 0.3));
+        damageOverlay.setVisible(false);
+        damageOverlay.setMouseTransparent(true);
+
+        // Labels
+        goldLabel    = new Label("Gold: "   + gold);
+        healthLabel  = new Label("Leben: " + baseHealth);
+        Label selectedLabel = new Label("Ausgewählt: " + currentTowerType.getDisplayName());
+        messageLabel = new Label();
         messageLabel.setTextFill(Color.RED);
         messageLabel.setStyle("-fx-font-size: 18px; -fx-font-weight: bold;");
         messageLabel.setVisible(false);
-        messageLabel.setMouseTransparent(true); // Spielinteraktion nicht blockieren
-        damageOverlay.setFill(Color.rgb(255, 0, 0, 0.3)); // halbtransparentes Rot
-        damageOverlay.setVisible(false);
-        damageOverlay.setMouseTransparent(true); // blockiert keine Mausaktionen
-
-
-        GraphicsContext gc = canvas.getGraphicsContext2D();
-
-        Label selectedLabel = new Label("Ausgewählt: " + currentTowerType.getDisplayName());
-        selectedLabel.setAlignment(Pos.CENTER_RIGHT);
-        selectedLabel.setMaxWidth(Double.MAX_VALUE);
-        goldLabel = new Label("Gold: " + gold);
-        goldLabel.setAlignment(Pos.CENTER_RIGHT);
-        goldLabel.setMaxWidth(Double.MAX_VALUE);
-
-        healthLabel = new Label("Leben: " + baseHealth);
-        healthLabel.setAlignment(Pos.CENTER_RIGHT);
-        healthLabel.setMaxWidth(Double.MAX_VALUE);
-
-        messageLabel.setTextFill(Color.RED);
-        messageLabel.setVisible(false); // Unsichtbar bis etwas angezeigt wird
+        messageLabel.setMouseTransparent(true);
         StackPane.setAlignment(messageLabel, Pos.TOP_CENTER);
-        StackPane.setMargin(messageLabel, new Insets(60, 0, 0, 0)); // Abstand von oben (z. B. über dem Pfad)
+        StackPane.setMargin(messageLabel, new Insets(60,0,0,0));
 
-
-
+        // Turm-Auswahl-Buttons
         HBox buttonBar = new HBox(8);
         for (TowerType type : TowerType.values()) {
             Button btn = new Button(type.getDisplayName());
@@ -103,7 +131,6 @@ public class Main extends Application {
                 currentTowerType = type;
                 selectedLabel.setText("Ausgewählt: " + type.getDisplayName());
                 updateSelectionUI();
-
             });
             btn.addEventHandler(MouseEvent.MOUSE_CLICKED, e -> {
                 if (e.getClickCount() == 2) showTypeInfo(type);
@@ -112,62 +139,141 @@ public class Main extends Application {
             typeButtonMap.put(type, btn);
         }
         updateSelectionUI();
-        // Spiel starten Button erzeugen
-        Button startButton = new Button("Spiel starten");
-        startButton.setOnAction(e -> {
-            gameStarted = true;
-            startButton.setDisable(true); // optional: deaktiviert den Button nach Klick
 
-        });
+        // Start- & Pause-Buttons
+        Button startButton = new Button("Spiel starten");
         Button pauseButton = new Button("Pause");
         pauseButton.setOnAction(e -> {
             paused = !paused;
             pauseButton.setText(paused ? "Fortsetzen" : "Pause");
         });
 
-
-        HBox topBar = new HBox(8, buttonBar, selectedLabel, goldLabel, healthLabel, startButton, pauseButton, messageLabel);
-
-        HBox.setHgrow(selectedLabel, Priority.ALWAYS);
+        // Top-Bar (muss VOR recalcPathAndSpots referenziert sein)
+        HBox topBar = new HBox(8,
+                buttonBar,
+                selectedLabel,
+                goldLabel,
+                healthLabel,
+                waveLabel,      // <-- neu
+                startButton,
+                pauseButton,
+                messageLabel
+        );
+        topBar.setPadding(new Insets(5));
         topBar.setAlignment(Pos.CENTER_LEFT);
+        HBox.setHgrow(selectedLabel, Priority.ALWAYS);
 
-        canvas.addEventHandler(MouseEvent.MOUSE_CLICKED, this::handleCanvasClick);
-        canvas.widthProperty().addListener((o, oldW, newW) ->
-                recalcPathAndSpots(canvas, newW.doubleValue(), canvas.getHeight()));
-        canvas.heightProperty().addListener((o, oldH, newH) ->
-                recalcPathAndSpots(canvas, canvas.getWidth(), newH.doubleValue()));
+        // Start-Button-Handler
+        startButton.setOnAction(e -> {
+            gameStarted = true;
+            startButton.setDisable(true);
+            recalcPathAndSpots(canvas, canvas.getWidth(), canvas.getHeight());
+            currentWave = 1;
+            initWave(currentWave);
+        });
 
-        new AnimationTimer() {
-            @Override
-            public void handle(long now) {
-                if (gameStarted && !paused) {
-                    if (lastSpawnTime == 0 || now - lastSpawnTime >= SPAWN_INTERVAL) {
-                        enemies.add(Enemy.spawn(pathPoints));
-                        lastSpawnTime = now;
-                    }
-                    updateGame();
-                }
-                drawGame(gc); // Zeichnen immer, auch wenn pausiert
-            }
-        }.start();
-
-
+        // Layout
         StackPane gamePane = new StackPane(canvas, damageOverlay, messageLabel);
-        BorderPane root = new BorderPane(gamePane);
+        BorderPane root     = new BorderPane(gamePane, topBar, null, null, null);
 
-        root.setTop(topBar);
+        // Scene & Resize bindings
         Scene scene = new Scene(root, 900, 650);
         canvas.widthProperty().bind(scene.widthProperty());
         canvas.heightProperty().bind(scene.heightProperty().subtract(topBar.heightProperty()));
-                damageOverlay.widthProperty().bind(canvas.widthProperty());
+        damageOverlay.widthProperty().bind(canvas.widthProperty());
         damageOverlay.heightProperty().bind(canvas.heightProperty());
 
+        // Show stage
         stage.setScene(scene);
         stage.setTitle("Tower Defense");
         stage.show();
 
-        recalcPathAndSpots(canvas, scene.getWidth(), scene.getHeight() - topBar.getHeight());
+        // Initial path & spots
+        recalcPathAndSpots(canvas, canvas.getWidth(), canvas.getHeight() - topBar.getHeight());
+
+        // Mouse handler
+        canvas.addEventHandler(MouseEvent.MOUSE_CLICKED, this::handleCanvasClick);
+
+        // Main loop
+        new AnimationTimer() {
+            @Override
+            public void handle(long now) {
+                if (gameStarted && !paused) {
+                    if (!spawnQueue.isEmpty()) {
+                        if (lastSpawnTime == 0 || now - lastSpawnTime >= waveSpawnInterval) {
+                            enemies.add(spawnQueue.remove(0).get());
+                            lastSpawnTime = now;
+                        }
+                    } else if (enemies.isEmpty()) {
+                        if (currentWave >= maxWaves) {
+                            gameStarted = false;
+                            messageLabel.setText("Du hast alle Wellen geschafft!");
+                            messageLabel.setVisible(true);
+                        } else {
+                            currentWave++;
+                            initWave(currentWave);
+                        }
+                    }
+                    updateGame();
+                }
+                drawGame(gc);
+            }
+        }.start();
     }
+
+
+    private void initWave(int wave) {
+        this.currentWave = wave;
+        waveLabel.setText("Runde: " + wave);
+        spawnQueue.clear();
+
+        // Basismenge pro Typ
+        int nNormal = baseNormal + (wave - 1) * 5;
+        int nFast   = baseFast   + (wave - 1) * 2;
+        int nTank   = baseTank   + (wave - 1) * 1;
+
+        // 1) normale, schnelle und Panzer-Gegner
+        for (int i = 0; i < nNormal; i++) spawnQueue.add(() -> new Enemy(pathPoints));
+        for (int i = 0; i < nFast;   i++) spawnQueue.add(() -> new FastEnemy(pathPoints));
+        for (int i = 0; i < nTank;   i++) spawnQueue.add(() -> new TankEnemy(pathPoints));
+
+        // 2) ab Welle 3: FlowEnemy, MetalBloon & RegenEnemy
+        if (wave >= 3) {
+            int extras = wave - 2; // ab Welle 3 → 1, Welle 4 → 2, …, Welle 10 → 8
+
+            // FlowEnemy
+            for (int i = 0; i < extras; i++) {
+                spawnQueue.add(() -> new FlowEnemy(pathPoints));
+            }
+            // MetalBloon
+            for (int i = 0; i < extras; i++) {
+                spawnQueue.add(() -> new MetalBloon(pathPoints));
+            }
+            // RegenEnemy
+            for (int i = 0; i < extras; i++) {
+                spawnQueue.add(() -> new RegenEnemy(pathPoints));
+            }
+        }
+
+        // 3) zufällige Reihenfolge
+        Collections.shuffle(spawnQueue);
+
+        // 4) Spawn-Intervall anpassen (min. 0.2 s)
+        long baseIntervalNs = 1_000_000_000L;
+        waveSpawnInterval = Math.max(
+                200_000_000L,
+                baseIntervalNs - (wave - 1) * 100_000_000L
+        );
+        lastSpawnTime = 0;
+
+        // 5) Wellen-Message
+        messageLabel.setText("Welle " + wave);
+        messageLabel.setVisible(true);
+        PauseTransition pause = new PauseTransition(Duration.seconds(2));
+        pause.setOnFinished(e -> messageLabel.setVisible(false));
+        pause.play();
+    }
+
 
 
 
@@ -193,11 +299,16 @@ public class Main extends Application {
 
     private void handleCanvasClick(MouseEvent e) {
         double x = e.getX(), y = e.getY();
+
         if (e.getButton() == MouseButton.SECONDARY) {
             Iterator<Tower> it = towers.iterator();
             while (it.hasNext()) {
                 Tower t = it.next();
                 if (Math.hypot(x - t.getX(), y - t.getY()) < SPOT_MARGIN) {
+                    TowerType type = towerTypeMap.get(t);
+                    int refund = type.getCost() / 2;
+                    gold += refund;
+                    goldLabel.setText("Gold: " + gold);
                     it.remove();
                     towerTypeMap.remove(t);
                     return;
@@ -213,6 +324,7 @@ public class Main extends Application {
             tryPlaceTower(e);
         }
     }
+
 
     private void showPlacementInfo(TowerType type) {
         Alert a = new Alert(Alert.AlertType.INFORMATION);
@@ -331,28 +443,36 @@ public class Main extends Application {
 
 
     private void updateGame() {
+        // 1) Türme feuern
         for (Tower t : towers) {
             t.tickCooldown();
             TowerType type = towerTypeMap.get(t);
             if (!t.readyToFire()) continue;
 
-            if (type == TowerType.SNIPER) {
-                double noShootRadius = 100;
-                boolean close = enemies.stream()
-                        .anyMatch(en -> Math.hypot(t.getX() - en.getX(), t.getY() - en.getY()) < noShootRadius);
-                if (close) continue;
-            }
-
+            //  --- FlowEnemy nur von bestimmten Türmen anvisierbar ---
             Enemy target = null;
             double bestDist = Double.MAX_VALUE;
             for (Enemy en : enemies) {
+                // 1) Abstand prüfen
                 double d = Math.hypot(t.getX() - en.getX(), t.getY() - en.getY());
-                if (d <= type.getRange() && d < bestDist) {
+                if (d > type.getRange()) continue;
+                // 2) Stealth-FlowEnemy überspringen, wenn Turm nicht geeignet
+                if (en instanceof FlowEnemy) {
+                    boolean canSee = (type == TowerType.YELLOW   // Magieturm
+                            || type == TowerType.SNIPER     // Sniperturm
+                            || type == TowerType.RED);      // Bogenturm == RED
+                    if (!canSee) continue;
+                }
+                // 3) Bestes Ziel nach Distanz
+                if (d < bestDist) {
                     bestDist = d;
                     target = en;
                 }
             }
             if (target == null) continue;
+
+            // … hier kommt dein bestehender Abschuss-Code …
+
 
             Point2D origin = new Point2D(t.getX(), t.getY());
 
@@ -361,7 +481,7 @@ public class Main extends Application {
                 for (Enemy en : enemies) {
                     if (origin.distance(en.getX(), en.getY()) <= type.getRange()) {
                         en.takeDamage(type.getDamage());
-                        en.applySlow(100, 0.3);
+                        en.applySlow(100, 0.5);
                     }
                 }
             } else if (type == TowerType.FIRE) {
@@ -399,26 +519,58 @@ public class Main extends Application {
 
         enemies.forEach(Enemy::update);
 
+        // 3) Projektil-Kollisionen
+        // 3) Projektil-Kollisionen
         Iterator<Projectile> pit = projectiles.iterator();
         while (pit.hasNext()) {
             Projectile p = pit.next();
             p.update();
-            boolean remove = false;
-            for (Enemy en : enemies) {
-                if (Math.hypot(p.getX() - en.getX(), p.getY() - en.getY()) < 12) {
-                    if (p instanceof FireProjectile) {
-                        en.applyBurn(90, 1);   // 90 Frames = 1,5 s Dauer, 1 Schaden pro Tick
-                        sparks.add(new Spark(en.getX(), en.getY()));
-                        remove = true;
 
-                } else if (p instanceof MagicProjectile mp) {
+            boolean remove = false;
+
+            // wir durchlaufen alle Gegner
+            for (Enemy en : enemies) {
+                // Trefferbereich prüfen
+                if (Math.hypot(p.getX() - en.getX(), p.getY() - en.getY()) < 12) {
+
+                    // ---- MetalBloon-Spezialfall ----
+                    if (en instanceof MetalBloon mb) {
+                        // 1) Hülle noch dran?
+                        if (mb.isShellIntact()) {
+                            // nur Feuer- oder Kanonen-Geschosse dürfen die Hülle beschädigen
+                            if (p instanceof FireProjectile || p instanceof CannonProjectile) {
+                                mb.hitShell(p.getDamage());
+                                remove = true;  // diese Projektile gehen bei Einschlag auf die Hülle kaputt
+                            }
+                            // andere Projektil-Typen prallen ab und verschwinden NICHT:
+                            //   wir setzen remove=false und springen direkt zum nächsten Gegner
+                            break;
+                        }
+                        // 2) Hülle schon weg → ganz normal Schaden aufs Leben:
+                        mb.takeDamage(p.getDamage());
+                        sparks.add(new Spark(mb.getX(), mb.getY()));
+                        if (p instanceof CannonProjectile) explosions.add(new Explosion(mb.getX(), mb.getY()));
+                        remove = true;
+                        break;
+                    }
+
+                    // ---- Normale Magic-/Standard-/Eis-Logik ----
+                    if (p instanceof MagicProjectile mp) {
                         if (!mp.hasHit(en)) {
                             en.takeDamage(mp.getDamage());
                             sparks.add(new Spark(en.getX(), en.getY()));
                             mp.registerHit(en);
                         }
                         if (mp.isExpired()) remove = true;
+
+                    } else if (p instanceof FireProjectile) {
+                        // z.B. Brenn-Logik…
+                        en.applyBurn(90, 1);
+                        sparks.add(new Spark(en.getX(), en.getY()));
+                        remove = true;
+
                     } else {
+                        // Standardprojektil & CannonProjectile
                         en.takeDamage(p.getDamage());
                         sparks.add(new Spark(en.getX(), en.getY()));
                         if (p instanceof CannonProjectile) {
@@ -426,11 +578,17 @@ public class Main extends Application {
                         }
                         remove = true;
                     }
-                    break;
+
+                    break; // sobald ein Treffer verarbeitet ist, nicht weiter nach anderen Gegnern schauen
                 }
             }
-            if (remove) pit.remove();
+
+            if (remove) {
+                pit.remove();
+            }
         }
+
+
 
 
         Iterator<PoisonCloud> pcIt = poisonClouds.iterator();
@@ -448,10 +606,18 @@ public class Main extends Application {
         while (eit.hasNext()) {
             Enemy en = eit.next();
             if (!en.isAlive()) {
-                gold++;
+                int reward;
+                if (en instanceof FastEnemy) {
+                    reward = 3;
+                } else if (en instanceof TankEnemy) {
+                    reward = 4;
+                } else {
+                    reward = 2;
+                }
+                gold += reward;
                 goldLabel.setText("Gold: " + gold);
                 eit.remove();
-            } else if (en.hasFinished()) {
+        } else if (en.hasFinished()) {
                 if (en instanceof FastEnemy)      baseHealth -= 1;
                 else if (en instanceof TankEnemy) baseHealth -= 5;
                 else                               baseHealth -= 3;
@@ -620,6 +786,20 @@ public class Main extends Application {
                 (int)(c.getRed() * 255),
                 (int)(c.getGreen() * 255),
                 (int)(c.getBlue() * 255));
+    }
+
+    private void addScore(int delta) {
+        score += delta;
+        scoreLabel.setText("Score: " + score);
+
+        gold += GOLD_REWARD;
+        goldLabel.setText("Gold: " + gold);
+
+        if (score > highScore) {
+            highScore = score;
+            highScoreLabel.setText("Highscore: " + highScore);
+            HighScoreManager.save(highScore);
+        }
     }
 
     public static void main(String[] args) {
