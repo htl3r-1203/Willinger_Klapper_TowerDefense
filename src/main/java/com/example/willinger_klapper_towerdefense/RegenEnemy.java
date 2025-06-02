@@ -6,7 +6,7 @@ import java.util.List;
 
 public class RegenEnemy extends Enemy {
     private static final int BASE_HEALTH     = 8;
-    private static final double BASE_SPEED   = 0.4;
+    private static final double BASE_SPEED   = 1;
     private static final int REGEN_INTERVAL  = 60; // in Frames (≈1 Sekunde @60fps)
     private static final int REGEN_AMOUNT    = 1;  // pro Intervall
 

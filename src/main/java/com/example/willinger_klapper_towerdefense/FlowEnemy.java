@@ -8,8 +8,8 @@ import javafx.scene.paint.Color;
  * Spawnt ab Welle 3.
  */
 public class FlowEnemy extends Enemy {
-    private static final int    DEFAULT_HEALTH = 5;
-    private static final double DEFAULT_SPEED  = 0.6;
+    private static final int    DEFAULT_HEALTH = 8;
+    private static final double DEFAULT_SPEED  = 1;
 
     public FlowEnemy(java.util.List<Point2D> path) {
         super(path, DEFAULT_HEALTH, DEFAULT_SPEED);

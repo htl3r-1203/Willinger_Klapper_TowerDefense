@@ -10,7 +10,7 @@ import java.util.List;
  * aufgebrochen werden kann. Sobald die Hülle zerstört ist, verhält er sich wie ein normaler Enemy.
  */
 public class MetalBloon extends Enemy {
-    private int shellHP = 10;
+    private int shellHP = 5;
     private boolean shellIntact = true;
 
     public MetalBloon(List<Point2D> path) {

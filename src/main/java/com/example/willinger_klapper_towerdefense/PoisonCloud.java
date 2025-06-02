@@ -11,11 +11,9 @@ import javafx.scene.canvas.GraphicsContext;
 import java.util.Map;
 import java.util.HashMap;
 
-
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-
 
 public class PoisonCloud {
     private final Point2D center;
@@ -54,7 +52,6 @@ public class PoisonCloud {
             }
         }
     }
-
 
     public void render(GraphicsContext gc) {
         if (!isAlive()) return;

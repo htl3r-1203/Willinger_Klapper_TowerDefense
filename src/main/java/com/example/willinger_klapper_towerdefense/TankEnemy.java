@@ -7,7 +7,7 @@ import java.util.List;
 
 public class TankEnemy extends Enemy {
     public TankEnemy(List<Point2D> path) {
-        super(path, 20, 0.2);
+        super(path, 25, 0.2);
         this.color = Color.DARKGREEN;
     }
 }

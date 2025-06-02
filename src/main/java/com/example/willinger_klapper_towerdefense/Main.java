@@ -19,14 +19,10 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
-import javafx.scene.layout.StackPane;
-import javafx.geometry.Insets;
 import javafx.animation.PauseTransition;
 import javafx.util.Duration;
 import java.util.function.Supplier;
 import java.util.Collections;
-import java.nio.file.*;
-import java.util.Optional;
 
 import java.util.*;
 
@@ -41,9 +37,8 @@ public class Main extends Application {
     private Rectangle damageOverlay = new Rectangle();
     private final List<PoisonCloud> poisonClouds = new ArrayList<>();
     private static final double NO_SHOOT_RADIUS = 30;
-    private int currentWave = 1;
-    private final int maxWaves = 15;
-    private static final int GOLD_REWARD = 5;
+    private int currentWave = 0;
+    private final int maxWaves = 10;
 
     // Basis-Anzahl in Welle 1:
     // Wellen‐ und Spawn‐Daten
@@ -68,14 +63,6 @@ public class Main extends Application {
     private static final double PROJECTILE_SPEED = 4;
     private static final long   SPAWN_INTERVAL   = 1_000_000_000L;
     private Label waveLabel = new Label("Runde: 0");
-    private int score = 0;
-    private int highScore = HighScoreManager.load();
-    private int lives = 20;
-
-    private final Label scoreLabel     = new Label("Score: 0");
-    private final Label highScoreLabel = new Label("Highscore: " + highScore);
-    private final Label livesLabel     = new Label("Lives: 20");
-
 
     private final List<Point2D> pathNorm     = List.of(
             new Point2D(0.00, 0.30), new Point2D(0.35, 0.30),
@@ -84,15 +71,15 @@ public class Main extends Application {
             new Point2D(0.30, 0.80), new Point2D(0.80, 0.80),
             new Point2D(0.80, 0.20), new Point2D(1.02, 0.20)
     );
-    private final List<Point2D> pathPoints = new ArrayList<>();
-    private final List<Point2D> buildSpots = new ArrayList<>();
-    private final List<Enemy> enemies = new ArrayList<>();
-    private final List<Tower> towers = new ArrayList<>();
-    private final List<Projectile> projectiles = new ArrayList<>();
-    private final List<Explosion> explosions = new ArrayList<>();
-    private final List<IceBlast> iceBlasts = new ArrayList<>();
-    private final List<Spark> sparks = new ArrayList<>();
-    private final Map<Tower, TowerType> towerTypeMap = new HashMap<>();
+    private final List<Point2D> pathPoints   = new ArrayList<>();
+    private final List<Point2D> buildSpots   = new ArrayList<>();
+    private final List<Enemy>    enemies      = new ArrayList<>();
+    private final List<Tower>    towers       = new ArrayList<>();
+    private final List<Projectile> projectiles= new ArrayList<>();
+    private final List<Explosion>  explosions = new ArrayList<>();
+    private final List<IceBlast>   iceBlasts  = new ArrayList<>();
+    private final List<Spark>      sparks     = new ArrayList<>();
+    private final Map<Tower, TowerType> towerTypeMap  = new HashMap<>();
     private final Map<TowerType, Button> typeButtonMap = new HashMap<>();
 
     private TowerType currentTowerType = TowerType.RED;
@@ -325,7 +312,6 @@ public class Main extends Application {
         }
     }
 
-
     private void showPlacementInfo(TowerType type) {
         Alert a = new Alert(Alert.AlertType.INFORMATION);
         a.setTitle("Turm-Info");
@@ -410,7 +396,6 @@ public class Main extends Application {
                     return;
                 }
 
-
                 // Turm setzen
                 Tower tw = new Tower(spot.getX(), spot.getY(), currentTowerType);
                 towers.add(tw);
@@ -438,9 +423,6 @@ public class Main extends Application {
             }
         }, 2000);
     }
-
-
-
 
     private void updateGame() {
         // 1) Türme feuern
@@ -472,7 +454,6 @@ public class Main extends Application {
             if (target == null) continue;
 
             // … hier kommt dein bestehender Abschuss-Code …
-
             Point2D origin = new Point2D(t.getX(), t.getY());
 
             if (type == TowerType.GREEN) {
@@ -587,9 +568,6 @@ public class Main extends Application {
             }
         }
 
-
-
-
         Iterator<PoisonCloud> pcIt = poisonClouds.iterator();
         while (pcIt.hasNext()) {
             PoisonCloud cloud = pcIt.next();
@@ -630,9 +608,6 @@ public class Main extends Application {
             }
         }
     }
-
-
-
 
     /**
      * Berechnet den prognostizierten Trefferpunkt auf einen sich bewegenden Gegner.
@@ -778,27 +753,11 @@ public class Main extends Application {
 
     }
 
-
-
     private String toHex(Color c) {
         return String.format("#%02X%02X%02X",
                 (int)(c.getRed() * 255),
                 (int)(c.getGreen() * 255),
                 (int)(c.getBlue() * 255));
-    }
-
-    private void addScore(int delta) {
-        score += delta;
-        scoreLabel.setText("Score: " + score);
-
-        gold += GOLD_REWARD;
-        goldLabel.setText("Gold: " + gold);
-
-        if (score > highScore) {
-            highScore = score;
-            highScoreLabel.setText("Highscore: " + highScore);
-            HighScoreManager.save(highScore);
-        }
     }
 
     public static void main(String[] args) {
